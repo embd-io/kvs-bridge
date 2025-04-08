@@ -1,0 +1,13 @@
+amazon-kinesis-video-streams-producer-sdk-cpp/
+h264/
+frames/
+*.mp4
+*.h264
+*.h265
+*.mjpeg
+
+static-1s-h264.sh
+install-gstreamer.sh
+kvs-bridge-h264.py
+export-aws.sh
+
