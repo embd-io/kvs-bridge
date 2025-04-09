@@ -2,18 +2,23 @@ import os
 import socket
 import subprocess
 import struct
+import sys
 
 # Configuration
 STREAM_NAME = "kvs-bridge-stream" # Kinesis Video Stream name
-
 HOST = '0.0.0.0'
 PORT = 5000
 
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind((HOST, PORT))
-server.listen(1)
-conn, addr = server.accept()
-print(f"Connection from {addr}")
+# Create a TCP/IP socket and listen for incoming connection
+try:
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind((HOST, PORT))
+    server.listen(1)
+    conn, addr = server.accept()
+    print(f"Connection from {addr}")
+except socket.error as e:
+    print(f"Socket error: {e}")
+    sys.exit(1)
 
 # Fetch AWS credentials
 assert os.environ.get("AWS_ACCESS_KEY_ID") and os.environ.get("AWS_SECRET_ACCESS_KEY"), "Missing AWS credentials"
