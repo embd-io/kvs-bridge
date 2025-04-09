@@ -8,6 +8,7 @@ frames/
 
 esp32/tcp_client/build
 esp32/tcp_client/archive
+esp32/tcp_client/.vscode
 esp32/tcp_client/dependencies.lock
 
 static-1s-h264.sh
