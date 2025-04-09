@@ -40,10 +40,27 @@ python3 kvs-bridge.py
 
 ```
 # first start the server
+
 python3 kvs-bridge-server.py
 ```
 
 ```
 # then start the client
+
 python3 kvs-bridge-client.py
+```
+
+4.3. ESP32 based static jpeg producer
+
+```
+# first start the kvs bridge server
+
+python3 kvs-bridge-server.py
+```
+
+```
+# then configure, build and flash ESP32 firmware
+# ref. esp32/tcp_client/README.md 
+
+idf.py -p <port> build flash monitor
 ```
