@@ -62,5 +62,5 @@ python3 kvs-bridge-server.py
 # then configure, build and flash ESP32 firmware
 # ref. esp32/tcp_client/README.md 
 
-idf.py -b <port> build flash monitor
+idf.py -p <port> build flash monitor
 ```
