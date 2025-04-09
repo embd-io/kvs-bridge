@@ -54,11 +54,16 @@ void kbridge_client(void)
         int nb_images = sizeof((uint8_t*)frames_jpg_start) / sizeof(frames_jpg_start[0]);
         int image_index = 0;
 
+        char* pData = NULL;
+        uint32_t uDataLen = 0;
+        int idx = 0;
+
         while (1) {
 
-            int idx = image_index % nb_images;
-            uint32_t uDataLen = frames_jpg_end[idx] - frames_jpg_start[idx] + 1;
-            char* pData = (char *)malloc(uDataLen);
+            // Allocate memory and read jpeg frames from flash
+            idx = image_index % nb_images;
+            uDataLen = frames_jpg_end[idx] - frames_jpg_start[idx] + 1;
+            pData = (char *)malloc(uDataLen);
             if (pData == NULL) {
                 ESP_LOGE(TAG, "Memory allocation failed for image %d", image_index);
                 while (1) {
@@ -85,6 +90,10 @@ void kbridge_client(void)
             ESP_LOGI(TAG, "Image data sent successfully");
 
             vTaskDelay(frame_rate_ms / portTICK_PERIOD_MS);
+        
+            // Free allocated memory
+            free(pData);
+            pData = NULL;
         }
 
         if (sock != -1) {
