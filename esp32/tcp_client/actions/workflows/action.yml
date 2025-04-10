@@ -7,4 +7,4 @@ runs:
       with:
         esp_idf_version: v5.3
         target: esp32s3
-      working-directory: esp32/tcp_client
+        path: esp32/tcp_client
