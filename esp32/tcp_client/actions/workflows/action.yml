@@ -3,8 +3,8 @@ runs:
   using: "composite"
   steps:
     - name: esp-idf build
-      working-directory: esp32/tcp_client
       uses: espressif/esp-idf-ci-action@v1
       with:
         esp_idf_version: v5.3
         target: esp32s3
+      working-directory: esp32/tcp_client
