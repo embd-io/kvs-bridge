@@ -1,0 +1,10 @@
+name: Main
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: ESP32
+        uses: ./esp32/.github/workflows/esp32_build.yml
