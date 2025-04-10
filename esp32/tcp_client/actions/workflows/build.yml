@@ -1,0 +1,9 @@
+name: ESP32 Build
+runs:
+  using: "composite"
+  steps:
+    - name: esp-idf build
+      uses: espressif/esp-idf-ci-action@v1
+      with:
+        esp_idf_version: v5.3
+        target: esp32s3

@@ -9,4 +9,4 @@ jobs:
         with:
           submodules: "recursive"
       - name: ESP32 build
-        uses: ./esp32/tcp_client/.github/workflows/action.yml
+        uses: ./esp32/tcp_client/actions/workflows/action.yml
