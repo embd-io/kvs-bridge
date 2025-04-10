@@ -10,6 +10,8 @@ esp32/tcp_client/build
 esp32/tcp_client/archive
 esp32/tcp_client/.vscode
 esp32/tcp_client/dependencies.lock
+esp32/tcp_client/sdkconfig
+esp32/tcp_client/sdkconfig.old
 
 static-1s-h264.sh
 install-gstreamer.sh
