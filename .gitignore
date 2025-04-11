@@ -6,15 +6,14 @@ frames/
 *.h265
 *.mjpeg
 
-esp32/tcp_client/build
-esp32/tcp_client/archive
-esp32/tcp_client/.vscode
-esp32/tcp_client/dependencies.lock
-esp32/tcp_client/sdkconfig
-esp32/tcp_client/sdkconfig.old
+esp32/**/build
+esp32/**/archive
+esp32/**/.vscode
+esp32/**/dependencies.lock
+esp32/**/managed_components
 
+esp32/usb_camera_mic_spk/
 static-1s-h264.sh
 install-gstreamer.sh
 kvs-bridge-h264.py
 export-aws.sh
-
