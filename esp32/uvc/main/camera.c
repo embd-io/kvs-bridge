@@ -5,7 +5,6 @@
  */
 #include <stdio.h>
 #include <unistd.h>
-#include "esp_log.h"
 #include "libuvc/libuvc.h"
 #include "libuvc_helper.h"
 #include "libuvc_adapter.h"
@@ -21,7 +20,7 @@
 
 #include "camera.h"
 
-static const char *TAG = "example";
+static const char *TAG = "camera";
 
 #define USB_DISCONNECT_PIN  GPIO_NUM_0
 
