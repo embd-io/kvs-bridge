@@ -1,4 +1,4 @@
-name: ESP32 TCP client build
+name: ESP32 uvc fw build
 runs:
   using: "composite"
   steps:
@@ -7,4 +7,4 @@ runs:
       with:
         esp_idf_version: v5.3
         target: esp32s3
-        path: esp32/tcp_client
+        path: esp32/uvc
