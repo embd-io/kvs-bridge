@@ -13,23 +13,38 @@ static const char *TAG = "kvs_bridge";
 // TCP socket hanlde
 int sock = -1;
 
+bool kvs_bridge_client_connected = false;
+
 // Server config
 #define HOST_IP_ADDR CONFIG_EXAMPLE_IPV4_ADDR
 #define PORT CONFIG_EXAMPLE_PORT
 
 esp_err_t kvs_bridge_client_disconnect ()
 {
+    if (!kvs_bridge_client_connected) {
+        ESP_LOGI(TAG, "Client already disconnected");
+        return ESP_OK;
+    }
     if (sock != -1) {
         ESP_LOGE(TAG, "Shutting down socket and restarting...");
         shutdown(sock, 0);
         close(sock);
+        sock = -1;
+        kvs_bridge_client_connected = false;
+        ESP_LOGI(TAG, "Client disconnected");
     }
     return ESP_OK;
 }
 
-esp_err_t kvs_bridge_client_send (char* pFrame, uint32_t uFrameSz)
+esp_err_t kvs_bridge_client_send(char* pFrame, uint32_t uFrameSz)
 {
     esp_err_t err = ESP_OK;
+
+    if (!kvs_bridge_client_connected)
+    {
+        ESP_LOGE(TAG, "Client not connected");
+        return ESP_FAIL;
+    }
 
     // Send image size
     ESP_LOGI(TAG, "Sending image size: %ld", uFrameSz);
@@ -79,6 +94,7 @@ esp_err_t kvs_bridge_client_connect (void)
         return ESP_FAIL;   
     }
     ESP_LOGI(TAG, "Successfully connected");
+    kvs_bridge_client_connected = true;
 
     return ESP_OK;
 }

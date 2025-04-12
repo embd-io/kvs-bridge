@@ -14,6 +14,7 @@
 #include "esp_timer.h"
 
 #include "camera.h"
+#include "kvs_bridge.h"
 
 static const char *TAG = "main";
 
@@ -44,17 +45,25 @@ void custom_frame_callback(uvc_frame_t *frame, void *ptr)
         fps = 0;
     }
 
-    // TODO: send frame to KVS bridge server
-    ESP_LOGI(TAG, "frame No %ld", frame_cnt);
+    if (kvs_bridge_client_send((char *)frame->data, (uint32_t)frame->data_bytes) != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to send frame No %ld to KVS bridge server", frame_cnt);
+    }
+    ESP_LOGI(TAG, "frame No %ld sent to KVS bridge server", frame_cnt);
 }
 
 int app_main(int argc, char **argv)
 {
-    if (camera_start(custom_frame_callback) != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to start UVC");
+    // connect tcp client
+    if (kvs_bridge_client_connect() != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to connect tcp client, make sure kvs-bridge-server.py is run first");
         return ESP_FAIL;
     }
-    ESP_LOGI(TAG, "UVC started");
+
+    // start camera
+    if (camera_start(custom_frame_callback) != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to start camera stream");
+        return ESP_FAIL;
+    }
 
     while (1) {
         vTaskDelay(pdMS_TO_TICKS(1000));
