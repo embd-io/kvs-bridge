@@ -12,6 +12,10 @@
 #include "freertos/event_groups.h"
 #include "esp_err.h"
 #include "esp_timer.h"
+#include "nvs_flash.h"
+#include "esp_netif.h"
+#include "protocol_examples_common.h"
+#include "esp_event.h"
 
 #include "camera.h"
 #include "kvs_bridge.h"
@@ -53,6 +57,16 @@ void custom_frame_callback(uvc_frame_t *frame, void *ptr)
 
 int app_main(int argc, char **argv)
 {
+    ESP_ERROR_CHECK(nvs_flash_init());
+    ESP_ERROR_CHECK(esp_netif_init());
+    ESP_ERROR_CHECK(esp_event_loop_create_default());
+
+    /* This helper function configures Wi-Fi or Ethernet, as selected in menuconfig.
+     * Read "Establishing Wi-Fi or Ethernet Connection" section in
+     * examples/protocols/README.md for more information about this function.
+     */
+    ESP_ERROR_CHECK(example_connect());
+
     // connect tcp client
     if (kvs_bridge_client_connect() != ESP_OK) {
         ESP_LOGE(TAG, "Failed to connect tcp client, make sure kvs-bridge-server.py is run first");
