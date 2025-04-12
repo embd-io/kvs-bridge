@@ -19,6 +19,7 @@
 #include "esp_timer.h"
 
 #include "camera.h"
+#include "kvs_bridge.h"
 
 static const char *TAG = "camera";
 
