@@ -64,3 +64,18 @@ python3 kvs-bridge-server.py
 
 idf.py -p <port> build flash monitor
 ```
+
+4.4. ESP32 UVC live MJPEG camera frames
+
+```
+# first start the kvs bridge server
+
+python3 kvs-bridge-server.py
+```
+
+```
+# then configure, build and flash ESP32 firmware
+# ref. esp32/uvc/README.md 
+
+idf.py -p <port> build flash monitor
+```

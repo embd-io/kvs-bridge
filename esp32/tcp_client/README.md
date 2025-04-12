@@ -5,7 +5,7 @@
 This solution is based on the official `tcp_client` example of the `esp-idf` framework. It is meant to serve as an MJPEG frame producer for
 a KVS bridge application.
 
-## COnfiguration
+## Configuration
 
 - Access the Example Configuration menu via `menuconfig`, update the `IPv4 address` and `Port` to match the server 
 - Access the Example Connection COnfiguration menu via `menuconfig`, provide a valid WiFi ssid and pwd for connection
