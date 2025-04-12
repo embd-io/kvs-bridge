@@ -50,6 +50,10 @@ esp_err_t kvs_bridge_client_send(char* pFrame, uint32_t uFrameSz)
     ESP_LOGI(TAG, "Sending image size: %ld", uFrameSz);
     uint32_t uFrameSz_be = htonl(uFrameSz);
     err = send(sock, (uint8_t *)&uFrameSz_be, sizeof(uFrameSz_be), 0);
+    if (err < 0) {
+        ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
+        return ESP_FAIL;
+    }
     ESP_LOGI(TAG, "Image size sent successfully");
 
     // Send image data
@@ -77,7 +81,7 @@ esp_err_t kvs_bridge_client_connect (void)
     dest_addr.sin_port = htons(PORT);
     addr_family = AF_INET;
     ip_protocol = IPPROTO_IP;
-    int sock =  socket(addr_family, SOCK_STREAM, ip_protocol);
+    sock =  socket(addr_family, SOCK_STREAM, ip_protocol);
     if (sock < 0) {
         ESP_LOGE(TAG, "Unable to create socket: errno %d", errno);
         return ESP_FAIL;
