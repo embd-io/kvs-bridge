@@ -69,7 +69,7 @@ int app_main(int argc, char **argv)
 
     // connect tcp client
     if (kvs_bridge_client_connect() != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to connect tcp client, make sure kvs-bridge-server.py is run first");
+        ESP_LOGE(TAG, "Failed to connect tcp client, make sure kvs-bridge-server-appsrc.py is run first");
         return ESP_FAIL;
     }
 
