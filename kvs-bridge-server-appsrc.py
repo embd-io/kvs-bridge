@@ -88,6 +88,8 @@ try:
         with open(f"./frames_client/frame_{frame_cnt}.jpg", "wb") as f:
             f.write(frame_data)
 
+        frame_cnt += 1
+
 
 # Ctrl+C handling
 except KeyboardInterrupt:
