@@ -1,15 +1,10 @@
 import os
+import time
 import socket
-import subprocess
-import struct
 import sys
 import gi
 gi.require_version('Gst', '1.0')
-from gi.repository import Gst, GLib
-
-import time
-
-Gst.init(None)
+from gi.repository import Gst
 
 # Configuration
 HOST = '0.0.0.0'
@@ -30,11 +25,13 @@ except socket.error as e:
 assert os.environ.get("AWS_ACCESS_KEY_ID") and os.environ.get("AWS_SECRET_ACCESS_KEY"), "Missing AWS credentials"
 assert os.environ.get("AWS_STREAM_NAME"), "Missing Kinesis Video Stream name"
 STREAM_NAME = os.environ.get("AWS_STREAM_NAME") # Kinesis Video Stream name
-fps = 10
+fps = 10 # Should match the fps in the client
 
 # Create the pipeline
+Gst.init(None)
+PIPELINE_NAME = "kvs-bridge-pipeline"
 pipeline = Gst.parse_launch(
-    'appsrc name=mysrc is-live=true format=time '
+    f'appsrc name={PIPELINE_NAME} is-live=true format=time '
     '! jpegparse '
     '! decodebin '
     '! videoconvert '
@@ -42,7 +39,7 @@ pipeline = Gst.parse_launch(
     f'! kvssink stream-name={STREAM_NAME}'
 )
 
-appsrc = pipeline.get_by_name("mysrc")
+appsrc = pipeline.get_by_name(PIPELINE_NAME)
 appsrc.set_property("caps", Gst.Caps.from_string(f"image/jpeg,framerate={fps}/1"))
 
 # Start the pipeline
@@ -62,6 +59,7 @@ def push_image(frame_data, frame_size) -> bool:
 
 frame_cnt = 0
 
+# Send frames to Kinesis Video Stream
 try:
     while True:
         # Read 4-byte length prefix
@@ -79,7 +77,7 @@ try:
                 break
             frame_data += chunk
 
-        # Send to GStreamer stdin
+        # Send frame
         print(f"Sending frame of size: {len(frame_data)} bytes")
         if not push_image(frame_data, frame_size):
             print(f"Failed to push image into pipeline")
