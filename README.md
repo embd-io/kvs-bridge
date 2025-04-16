@@ -28,7 +28,7 @@
 . ./export.sh
 ```
 
-4. Run 
+4. Run kvs-bridge
 
 4.1. standalone kvs-bridge.py example
 
@@ -41,7 +41,7 @@ python3 kvs-bridge.py
 ```
 # first start the server
 
-python3 kvs-bridge-server.py
+python3 kvs-bridge-server-appsrc.py
 ```
 
 ```
@@ -55,7 +55,7 @@ python3 kvs-bridge-client.py
 ```
 # first start the kvs bridge server
 
-python3 kvs-bridge-server.py
+python3 kvs-bridge-server-appsrc.py
 ```
 
 ```
@@ -70,7 +70,7 @@ idf.py -p <port> build flash monitor
 ```
 # first start the kvs bridge server
 
-python3 kvs-bridge-server.py
+python3 kvs-bridge-server-appsrc.py
 ```
 
 ```
@@ -78,4 +78,30 @@ python3 kvs-bridge-server.py
 # ref. esp32/uvc/README.md 
 
 idf.py -p <port> build flash monitor
+```
+
+5. Run kvs consumer sample
+
+5.1. Purpose
+
+This is useful for debugging and postprocessing purposes
+
+5.2. Setup
+
+```
+git submodule add https://github.com/aws-samples/amazon-kinesis-video-streams-consumer-library-for-python.git
+cd amazon-kinesis-video-streams-consumer-library-for-python
+pip install virtualenv
+python -m virtualenv venv
+venv/bin/python -m pip install requirements.txt
+```
+
+5.3. Modify sample
+
+E.g., update `on_fragment_arrived` callback to enable saving of mkv video contents into jpeg
+
+5.4. Run consumer sample
+
+```
+venv/bin/python kvs_consumer_library_example.py
 ```

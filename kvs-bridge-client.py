@@ -4,7 +4,7 @@ import glob
 import sys
 
 # Configuration
-fps = 30
+fps = 10
 HOST = '127.0.0.1'
 PORT = 5000
 
@@ -16,6 +16,8 @@ try:
 except socket.error as e:
     print(f"Socket error: {e}")
     sys.exit(1)
+
+time.sleep(1)  # Allow time for KVS pipe to initialize
 
 # Get sorted list of JPEGs and send them to the server
 jpeg_files = sorted(glob.glob("frames/frame_*.jpg"))

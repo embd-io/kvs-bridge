@@ -1,22 +1,31 @@
 import os
 import time
-from pathlib import Path
+import socket
+import sys
 import gi
 gi.require_version('Gst', '1.0')
 from gi.repository import Gst
+
+# Configuration
+HOST = '0.0.0.0'
+PORT = 5000
+
+# Create a TCP/IP socket and listen for incoming connection
+try:
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind((HOST, PORT))
+    server.listen(1)
+    conn, addr = server.accept()
+    print(f"Connection from {addr}")
+except socket.error as e:
+    print(f"Socket error: {e}")
+    sys.exit(1)
 
 # AWS configs
 assert os.environ.get("AWS_ACCESS_KEY_ID") and os.environ.get("AWS_SECRET_ACCESS_KEY"), "Missing AWS credentials"
 assert os.environ.get("AWS_STREAM_NAME"), "Missing Kinesis Video Stream name"
 STREAM_NAME = os.environ.get("AWS_STREAM_NAME") # Kinesis Video Stream name
-fps  = 30
-
-# Configuration
-FRAME_FOLDER = "./frames"  # Folder containing static MJPEG frames
-FRAME_INTERVAL = 1 / fps
-frame_files = sorted(Path(FRAME_FOLDER).glob("*.jpg"))
-print(f"Sending {len(frame_files)} frames...")
-loops = 10
+fps = 10 # Should match the fps in the client
 
 # Create the pipeline
 Gst.init(None)
@@ -52,18 +61,33 @@ frame_cnt = 0
 
 # Send frames to Kinesis Video Stream
 try:
-    for _ in range(loops):
-        for frame_path in frame_files:
-            frame_data = Path(frame_path).read_bytes()
-            frame_size = len(frame_data)
-            print(f"Sending frame of size: {len(frame_data)} bytes")
-            if not push_image(frame_data, frame_size):
-                print(f"Failed to push image into pipeline")
+    while True:
+        # Read 4-byte length prefix
+        size_data = conn.recv(4)
+        if not size_data:
+            break
+        frame_size = int.from_bytes(size_data, 'big')
+        print(f"Receiving frame of size: {frame_size} bytes")
+        
+        # Read the actual frame
+        frame_data = b''
+        while len(frame_data) < frame_size:
+            chunk = conn.recv(frame_size - len(frame_data))
+            if not chunk:
+                break
+            frame_data += chunk
 
-            frame_cnt += 1
+        # Send frame
+        print(f"Sending frame of size: {len(frame_data)} bytes")
+        if not push_image(frame_data, frame_size):
+            print(f"Failed to push image into pipeline")
+        else:
+            print(f"Frame successfully pushed to pipeline")
+        with open(f"./frames_client/frame_{frame_cnt}.jpg", "wb") as f:
+            f.write(frame_data)
 
-            # Simulate desired fps
-            time.sleep(FRAME_INTERVAL)
+        frame_cnt += 1
+
 
 # Ctrl+C handling
 except KeyboardInterrupt:
