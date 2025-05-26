@@ -80,6 +80,16 @@ python3 kvs-bridge-server-appsrc.py
 idf.py -p <port> build flash monitor
 ```
 
+4.5. ESP32 UVC live H264 camera frames
+
+```
+# first start the kvs bridge server
+
+python3 kvs-bridge-server-appsrc-h264.py
+```
+
+Then start streaming H264 frames to the H264 bridge server, using its IP address and the appropriate port.
+
 5. Run kvs consumer sample
 
 5.1. Purpose

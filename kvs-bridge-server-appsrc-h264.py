@@ -32,20 +32,17 @@ Gst.init(None)
 PIPELINE_NAME = "kvs-bridge-pipeline"
 pipeline = Gst.parse_launch(
     f'appsrc name={PIPELINE_NAME} is-live=true format=time '
-    '! jpegparse '
-    '! decodebin '
-    '! videoconvert '
-    '! x264enc tune=zerolatency bitrate=512 speed-preset=ultrafast '
+    '! h264parse config-interval=-1 '
     f'! kvssink stream-name={STREAM_NAME}'
 )
 
 appsrc = pipeline.get_by_name(PIPELINE_NAME)
-appsrc.set_property("caps", Gst.Caps.from_string(f"image/jpeg,framerate={fps}/1"))
+appsrc.set_property("caps", Gst.Caps.from_string('video/x-h264,stream-format=(string)byte-stream,alignment=(string)au'))
 
 # Start the pipeline
 pipeline.set_state(Gst.State.PLAYING)
 
-# Push JPEG buffers
+# Push H264 buffers
 def push_image(frame_data, frame_size) -> bool:
     buf = Gst.Buffer.new_allocate(None, frame_size, None)
     buf.fill(0, frame_data)
@@ -83,7 +80,7 @@ try:
             print(f"Failed to push image into pipeline")
         else:
             print(f"Frame successfully pushed to pipeline")
-        # with open(f"./frames_client/frame_{frame_cnt}.jpg", "wb") as f:
+        # with open(f"./frames_client/frame_{frame_cnt}.h264", "wb") as f:
         #     f.write(frame_data)
 
         frame_cnt += 1
