@@ -83,8 +83,8 @@ try:
             print(f"Failed to push image into pipeline")
         else:
             print(f"Frame successfully pushed to pipeline")
-        with open(f"./frames_client/frame_{frame_cnt}.jpg", "wb") as f:
-            f.write(frame_data)
+        # with open(f"./frames_client/frame_{frame_cnt}.jpg", "wb") as f:
+        #     f.write(frame_data)
 
         frame_cnt += 1
 
